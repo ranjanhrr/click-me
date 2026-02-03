@@ -1,304 +1,766 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Will you be my Valentine?</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Will you be my Valentine?</title>
 
-  <!-- Confetti library -->
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+    <!-- Google Fonts for attractive design -->
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
 
-  <style>
-    :root {
-      --bg1: #ffd6e7;
-      --bg2: #ffeef6;
-      --card: #ffffffcc;
-      --yes: #ff3b7a;
-      --yesHover: #ff1f68;
-    }
+    <!-- Confetti library -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 
-    * { box-sizing: border-box; }
+    <style>
+        :root {
+            --bg1: #f3d6ff; /* Softer purple-pink gradient start */
+            --bg2: #ffebf8; /* Light pink end */
+            --card: #ffffffdd; /* Slightly more opaque for better readability */
+            --yes: #d946ef; /* Vibrant purple-pink */
+            --yesHover: #c026d3; /* Darker hover */
+            --ink: #2e1065; /* Deep purple ink */
+            --muted: rgba(76, 29, 149, .68); /* Purple-muted */
+        }
 
-    body {
-      margin: 0;
-      min-height: 100svh;
-      display: grid;
-      place-items: center;
-      background: radial-gradient(circle at top, var(--bg2), var(--bg1));
-      font-family: system-ui, sans-serif;
-      overflow: hidden;
-      padding: 16px;
-    }
+        * {
+            box-sizing: border-box;
+        }
 
-    /* FULL-SCREEN CONFETTI CANVAS */
-    #confettiCanvas {
-      position: fixed;
-      inset: 0;
-      width: 100vw;
-      height: 100vh;
-      pointer-events: none;
-      z-index: 9999;
-    }
+        body {
+            margin: 0;
+            min-height: 100svh;
+            display: grid;
+            place-items: center;
+            background: radial-gradient(circle at top, var(--bg2), var(--bg1));
+            font-family: 'Montserrat', sans-serif;
+            overflow: hidden;
+            padding: 16px;
+        }
 
-    .card {
-      width: min(720px, 92vw);
-      padding: 26px 22px;
-      background: var(--card);
-      backdrop-filter: blur(10px);
-      border-radius: 22px;
-      text-align: center;
-      box-shadow: 0 18px 60px rgba(0,0,0,.15);
-    }
+        /* FULL-SCREEN CONFETTI CANVAS */
+        #confettiCanvas {
+            position: fixed;
+            inset: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 9999;
+        }
 
-    .art {
-      width: min(260px, 80vw);
-      margin: 0 auto 10px;
-      display: block;
-      filter: drop-shadow(0 10px 14px rgba(0,0,0,.12));
-    }
+        .card {
+            width: min(720px, 92vw);
+            padding: 26px 22px;
+            background: var(--card);
+            backdrop-filter: blur(12px); /* Enhanced blur */
+            border-radius: 28px; /* Softer corners */
+            text-align: center;
+            box-shadow: 0 20px 70px rgba(76, 29, 149, .18); /* Purple shadow */
+            position: relative;
+            z-index: 2;
+            border: 1px solid rgba(255, 255, 255, 0.5); /* Subtle border */
+        }
 
-    h1 {
-      font-size: clamp(26px, 4vw, 44px);
-      margin: 12px 0 18px;
-    }
+        .art {
+            width: min(260px, 80vw);
+            margin: 0 auto 10px;
+            display: block;
+            filter: drop-shadow(0 12px 16px rgba(76, 29, 149, .14)); /* Enhanced shadow */
+        }
 
-    .button-zone {
-      position: relative;
-      width: min(520px, 92%);
-      height: 150px;
-      margin: 0 auto;
-      touch-action: none;
-    }
+        h1 {
+            font-size: clamp(28px, 4.2vw, 48px);
+            margin: 12px 0 18px;
+            font-family: 'Great Vibes', cursive; /* Attractive cursive font */
+            color: var(--ink);
+            text-shadow: 0 2px 4px rgba(0, 0, 0, .1);
+        }
 
-    button {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      padding: 16px 24px;
-      font-size: 18px;
-      font-weight: 800;
-      border-radius: 999px;
-      border: none;
-      cursor: pointer;
-      box-shadow: 0 10px 24px rgba(0,0,0,.14);
-      user-select: none;
-      -webkit-tap-highlight-color: transparent;
-      transition: transform .12s ease, background .12s ease;
-    }
+        .button-zone {
+            position: relative;
+            width: min(520px, 92%);
+            height: 150px;
+            margin: 0 auto;
+            touch-action: none;
+        }
 
-    #yesBtn {
-      left: 18%;
-      background: var(--yes);
-      color: #fff;
-    }
-    #yesBtn:hover { background: var(--yesHover); }
+        .button-zone button {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            padding: 16px 24px;
+            font-size: 18px;
+            font-weight: 700;
+            border-radius: 999px;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 10px 24px rgba(76, 29, 149, .16); /* Purple shadow */
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            transition: transform .15s ease, background .15s ease;
+            font-family: 'Montserrat', sans-serif;
+        }
 
-    #noBtn {
-      left: 62%;
-      background: #e5e7eb;
-      color: #111827;
-    }
+        #yesBtn {
+            left: 18%;
+            background: linear-gradient(135deg, var(--yes), #f472b6); /* Gradient for attractiveness */
+            color: #fff;
+        }
 
-    .hint {
-      margin-top: 10px;
-      font-size: 13px;
-      opacity: .7;
-    }
+        #yesBtn:hover {
+            background: linear-gradient(135deg, var(--yesHover), #ec4899);
+        }
 
-    .result {
-      display: none;
-      margin-top: 18px;
-      animation: pop .35s ease;
-    }
+        #noBtn {
+            left: 62%;
+            background: #e9d5ff; /* Light purple-gray */
+            color: var(--ink);
+        }
 
-    .result h2 {
-      font-size: clamp(30px, 4.5vw, 46px);
-      margin: 10px 0;
-    }
+        .hint {
+            margin-top: 10px;
+            font-size: 13px;
+            opacity: .7;
+            font-style: italic;
+        }
 
-    .fireworks {
-      width: min(380px, 90vw);
-      margin: 0 auto;
-      display: block;
-    }
+        .result {
+            display: none;
+            margin-top: 18px;
+            animation: pop .35s ease;
+        }
 
-    @keyframes pop {
-      from { transform: scale(.96); opacity: 0; }
-      to { transform: scale(1); opacity: 1; }
-    }
-  </style>
+        .result h2 {
+            font-size: clamp(32px, 4.8vw, 50px);
+            margin: 10px 0;
+            font-family: 'Great Vibes', cursive;
+        }
+
+        .fireworks {
+            width: min(380px, 90vw);
+            margin: 0 auto;
+            display: block;
+            border-radius: 18px;
+        }
+
+        /* ---------- LOVE ALARM (INTRO STORY) ---------- */
+        #heartLayer {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 1;
+            opacity: 1;
+            transition: opacity .45s ease;
+        }
+
+        #heartLayer.is-leaving {
+            opacity: 0;
+        }
+
+        .heart {
+            position: absolute;
+            bottom: -28px;
+            left: var(--x);
+            width: var(--s);
+            height: var(--s);
+            background: var(--c);
+            transform: translate3d(-50%, 0, 0) rotate(45deg);
+            border-radius: 6px;
+            opacity: 0;
+            filter: drop-shadow(0 10px 14px rgba(76, 29, 149, .14)); /* Purple shadow */
+            animation: heartFloat var(--d) linear forwards;
+        }
+
+        .heart::before,
+        .heart::after {
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: inherit;
+            border-radius: 999px;
+        }
+
+        .heart::before {
+            top: -50%;
+            left: 0;
+        }
+
+        .heart::after {
+            top: 0;
+            left: -50%;
+        }
+
+        @keyframes heartFloat {
+            0% {
+                transform: translate3d(-50%, 0, 0) rotate(45deg) scale(.9);
+                opacity: 0;
+            }
+
+            12% {
+                opacity: .92;
+            }
+
+            100% {
+                transform: translate3d(calc(-50% + var(--dx)), -120vh, 0) rotate(45deg) scale(.7);
+                opacity: 0;
+            }
+        }
+
+        .story {
+            opacity: 1;
+            transform: none;
+            transition: opacity .5s ease, transform .5s ease;
+        }
+
+        .story.is-leaving {
+            opacity: 0;
+            transform: translateY(10px) scale(.98);
+        }
+
+        .story__frame {
+            width: min(560px, 100%);
+            margin: 0 auto 16px;
+            position: relative;
+            overflow: hidden;
+            border-radius: 22px; /* Softer */
+            box-shadow: 0 8px 20px rgba(76, 29, 149, .12);
+        }
+
+        .story__img {
+            width: 100%;
+            max-height: 56svh;
+            object-fit: cover;
+            border-radius: inherit;
+            display: block;
+            transition: transform .3s ease;
+        }
+
+        .story__frame:hover .story__img {
+            transform: scale(1.02); /* Subtle hover effect */
+        }
+
+        .story__caption {
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            gap: 6px;
+            padding: 14px 14px 12px;
+            text-align: center;
+            background: linear-gradient(to top, rgba(76, 29, 149, .58), rgba(0, 0, 0, 0) 62%); /* Purple gradient */
+            color: #fff;
+        }
+
+        .story__line {
+            font-weight: 700;
+            letter-spacing: .3px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, .35);
+            font-size: clamp(15px, 3vw, 20px);
+            font-family: 'Great Vibes', cursive; /* Attractive font */
+        }
+
+        .story__controls {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .battery-wrap {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 12px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, .75); /* Slightly brighter */
+            border: 1px solid rgba(76, 29, 149, .12); /* Purple border */
+        }
+
+        .battery {
+            position: relative;
+            width: min(320px, 72vw);
+            height: 18px;
+            border-radius: 999px;
+            border: 2px solid rgba(76, 29, 149, .22); /* Purple border */
+            overflow: hidden;
+            background: rgba(255, 255, 255, .82);
+        }
+
+        .battery::after {
+            content: "";
+            position: absolute;
+            right: -10px;
+            top: 50%;
+            width: 12px;
+            height: 10px;
+            transform: translateY(-50%);
+            border-radius: 4px;
+            background: rgba(76, 29, 149, .22);
+        }
+
+        .battery__fill {
+            width: 3%;
+            height: 100%;
+            border-radius: inherit;
+            background: linear-gradient(90deg, var(--yes), #f472b6); /* Gradient fill */
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .25);
+            transition: width .4s ease-out;
+        }
+
+        .battery__pct {
+            font-weight: 900;
+            color: var(--ink);
+            min-width: 52px;
+            text-align: right;
+        }
+
+        .battery-wrap.is-charging {
+            animation: batteryPulse 1.1s ease-in-out infinite;
+        }
+
+        .battery-wrap.is-charging .battery {
+            border-color: rgba(217, 70, 239, .55); /* Purple charging */
+        }
+
+        .battery-wrap.is-charging .battery__fill {
+            filter: drop-shadow(0 0 10px rgba(217, 70, 239, .35));
+        }
+
+        @keyframes batteryPulse {
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 rgba(217, 70, 239, .26);
+            }
+
+            50% {
+                box-shadow: 0 0 0 10px rgba(217, 70, 239, 0);
+            }
+        }
+
+        .battery-wrap.is-full {
+            animation: batteryFull .48s ease-out 1;
+        }
+
+        .battery-wrap.is-full .battery {
+            border-color: rgba(217, 70, 239, .68);
+        }
+
+        @keyframes batteryFull {
+            from {
+                transform: scale(1);
+            }
+
+            40% {
+                transform: scale(1.03);
+            }
+
+            to {
+                transform: scale(1);
+            }
+        }
+
+        .action-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 14px 22px;
+            font-size: 16px;
+            font-weight: 700;
+            border-radius: 999px;
+            border: none;
+            cursor: pointer;
+            background: linear-gradient(135deg, var(--yes), #f472b6); /* Attractive gradient */
+            color: #fff;
+            box-shadow: 0 10px 24px rgba(76, 29, 149, .16);
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            transition: transform .15s ease, background .15s ease, opacity .15s ease;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .action-btn:hover {
+            background: linear-gradient(135deg, var(--yesHover), #ec4899);
+            transform: scale(1.02);
+        }
+
+        .action-btn:active {
+            transform: scale(.98);
+        }
+
+        .action-btn:disabled {
+            opacity: .7;
+            cursor: not-allowed;
+        }
+
+        .proposal.card--enter {
+            animation: pop .35s ease;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            #heartLayer {
+                display: none !important;
+            }
+
+            .story {
+                transition: none;
+            }
+        }
+
+        @keyframes pop {
+            from {
+                transform: scale(.96);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+    </style>
 </head>
 
 <body>
-  <canvas id="confettiCanvas"></canvas>
+    <canvas id="confettiCanvas"></canvas>
 
-  <main class="card">
-    <!-- ANIMAL WITH HEART -->
-    <svg class="art" viewBox="0 0 320 240" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <linearGradient id="fur" x1="0" x2="1">
-          <stop offset="0" stop-color="#f7c7a1"/>
-          <stop offset="1" stop-color="#f2a97b"/>
-        </linearGradient>
-        <linearGradient id="heart" x1="0" x2="1">
-          <stop offset="0" stop-color="#ff4d7d"/>
-          <stop offset="1" stop-color="#ff1f68"/>
-        </linearGradient>
-      </defs>
+    <!-- LOVE ALARM – VALENTINE’S DAY MODE (INTRO) -->
+    <div id="heartLayer" aria-hidden="true"></div>
 
-      <path d="M250 50 C250 33 270 25 282 38
-               C294 25 314 33 314 50
-               C314 78 282 92 282 106
-               C282 92 250 78 250 50Z"
-            fill="url(#heart)"/>
+    <main class="card story" id="loveAlarm">
+        <div class="story__frame">
+            <img id="storyImg" class="story__img" src="images/2.jpeg" alt="A man sleeping" />
 
-      <path d="M90 120 C90 70 140 40 190 60
-               C240 40 290 70 290 120
-               C290 180 240 210 190 210
-               C140 210 90 180 90 120Z"
-            fill="url(#fur)"/>
+            <div class="story__caption">
+                <div class="story__line" id="storyLine1">heard its valentines day in a few days.... (im so nanchalantly
+                    sleeping)</div>
+                <div class="story__line" id="storyLine2">activate valentines day mode (remove my nonchalatness basically)
+                </div>
+            </div>
+        </div>
 
-      <path d="M110 92 L95 55 L140 78 Z" fill="#f2a97b"/>
-      <path d="M270 92 L285 55 L240 78 Z" fill="#f2a97b"/>
+        <div class="story__controls">
+            <div class="battery-wrap" id="batteryWrap" aria-label="Love battery">
+                <div class="battery" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="3">
+                    <div class="battery__fill" id="batteryFill" style="width: 3%"></div>
+                </div>
+                <div class="battery__pct"><span id="batteryPct">3</span>%</div>
+            </div>
 
-      <circle cx="160" cy="130" r="8"/>
-      <circle cx="220" cy="130" r="8"/>
+            <button class="action-btn" id="activateBtn" type="button">Activate</button>
+            <button class="action-btn" id="finalBtn" type="button" style="display: none;">and for the final question (click here)</button>
+        </div>
+    </main>
 
-      <path d="M190 144 C186 144 182 148 182 152
-               C182 160 190 164 190 170
-               C190 164 198 160 198 152
-               C198 148 194 144 190 144Z"
-            fill="#ff7aa2"/>
-    </svg>
+    <!-- EXISTING PROPOSAL UI (REVEALED AFTER INTRO) -->
+    <main class="card proposal" id="proposalCard" hidden>
+        <!-- ANIMAL WITH HEART -->
+        <img class="art" id="artImg" src="images/3.jpeg" alt="Cute animal">
 
-    <h1>nirali will you be my valentine?</h1>
+        <h1>nirali will you be my valentine?</h1>
 
-    <section class="button-zone" id="zone">
-      <button id="yesBtn">Yes</button>
-      <button id="noBtn">No</button>
-    </section>
+        <section class="button-zone" id="zone">
+            <button id="yesBtn">Yes</button>
+            <button id="noBtn">No</button>
+        </section>
 
-    <!-- HINT -->
-    <div class="hint" id="hint">“No” seems a bit shy 😈</div>
+        <!-- HINT -->
+        <div class="hint" id="hint">“No” seems a bit shy 😈</div>
 
-    <section class="result" id="result">
-      <h2>YAY! 🎉</h2>
-      <img
-        class="fireworks"
-        src="https://media.giphy.com/media/26ufdipQqU2lhNA4g/giphy.gif"
-        alt="Fireworks"
-      />
-    </section>
-  </main>
+        <section class="result" id="result">
+            <h2>YAY! 🎉</h2>
+            <img class="fireworks" src="https://media.giphy.com/media/26ufdipQqU2lhNA4g/giphy.gif" alt="Fireworks" />
+        </section>
+    </main>
 
-  <script>
-    const zone = document.getElementById("zone");
-    const yesBtn = document.getElementById("yesBtn");
-    const noBtn = document.getElementById("noBtn");
-    const result = document.getElementById("result");
-    const hint = document.getElementById("hint");
+    <script>
+        /* ---------- LOVE ALARM (INTRO STORY) ---------- */
+        const heartLayer = document.getElementById("heartLayer");
+        const loveAlarm = document.getElementById("loveAlarm");
+        const proposalCard = document.getElementById("proposalCard");
+        const storyImg = document.getElementById("storyImg");
+        const storyLine1 = document.getElementById("storyLine1");
+        const storyLine2 = document.getElementById("storyLine2");
+        const batteryWrap = document.getElementById("batteryWrap");
+        const batteryFill = document.getElementById("batteryFill");
+        const batteryPct = document.getElementById("batteryPct");
+        const batteryBar = batteryWrap ? batteryWrap.querySelector(".battery") : null;
+        const activateBtn = document.getElementById("activateBtn");
+        const finalBtn = document.getElementById("finalBtn");
 
-    /* ---------- CONFETTI ---------- */
-    const confettiCanvas = document.getElementById("confettiCanvas");
+        let heartTimer = null;
+        let introStarted = false;
 
-    function resizeConfettiCanvas() {
-      const dpr = Math.max(1, window.devicePixelRatio || 1);
-      confettiCanvas.width = Math.floor(window.innerWidth * dpr);
-      confettiCanvas.height = Math.floor(window.innerHeight * dpr);
-      confettiCanvas.style.width = "100vw";
-      confettiCanvas.style.height = "100vh";
-    }
+        function clampPercent(n) {
+            return Math.max(0, Math.min(100, n));
+        }
 
-    resizeConfettiCanvas();
-    window.addEventListener("resize", resizeConfettiCanvas);
-    window.addEventListener("orientationchange", () => setTimeout(resizeConfettiCanvas, 150));
+        function setBattery(percent) {
+            const p = Math.round(clampPercent(percent));
+            batteryFill.style.width = p + "%";
+            batteryPct.textContent = p;
+            batteryBar.setAttribute("aria-valuenow", String(p));
+        }
 
-    const confettiInstance = confetti.create(confettiCanvas, {
-      resize: false,
-      useWorker: true
-    });
+        function spawnHeart(mode) {
+            if (!heartLayer || heartLayer.hidden) return;
 
-    function fullScreenConfetti() {
-      const end = Date.now() + 1600;
+            const heart = document.createElement("span");
+            heart.className = "heart";
 
-      (function frame() {
-        confettiInstance({
-          particleCount: 12,
-          spread: 90,
-          startVelocity: 45,
-          ticks: 180,
-          origin: { x: Math.random(), y: Math.random() * 0.3 }
+            const colors = ["#d946ef", "#f472b6", "#f3d6ff", "#c026d3"]; /* Updated colors */
+            const color = colors[Math.floor(Math.random() * colors.length)];
+
+            const size = mode === "charging"
+                ? 14 + Math.random() * 14
+                : 10 + Math.random() * 12;
+
+            const durationMs = mode === "charging"
+                ? 1800 + Math.random() * 1500
+                : 2600 + Math.random() * 2200;
+
+            const driftPx = (Math.random() * 2 - 1) * (mode === "charging" ? 70 : 40);
+
+            heart.style.setProperty("--x", `${Math.random() * 100}%`);
+            heart.style.setProperty("--s", `${size}px`);
+            heart.style.setProperty("--c", color);
+            heart.style.setProperty("--d", `${durationMs}ms`);
+            heart.style.setProperty("--dx", `${driftPx}px`);
+
+            heart.addEventListener("animationend", () => heart.remove(), { once: true });
+            heartLayer.appendChild(heart);
+        }
+
+        function startHearts(mode) {
+            stopHearts();
+            if (window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches) return;
+            if (!heartLayer) return;
+
+            const intervalMs = mode === "charging" ? 120 : 320;
+            spawnHeart(mode);
+            heartTimer = window.setInterval(() => spawnHeart(mode), intervalMs);
+        }
+
+        function stopHearts() {
+            if (heartTimer) window.clearInterval(heartTimer);
+            heartTimer = null;
+        }
+
+        function easeOutCubic(t) {
+            return 1 - Math.pow(1 - t, 3);
+        }
+
+        function revealProposal() {
+            if (!proposalCard) return;
+            proposalCard.hidden = false;
+            proposalCard.classList.add("card--enter");
+            window.setTimeout(() => proposalCard.classList.remove("card--enter"), 400);
+        }
+
+        function runLoveAlarmSequence() {
+            if (
+                !heartLayer ||
+                !loveAlarm ||
+                !proposalCard ||
+                !storyImg ||
+                !storyLine1 ||
+                !storyLine2 ||
+                !batteryWrap ||
+                !batteryFill ||
+                !batteryPct ||
+                !batteryBar ||
+                !activateBtn ||
+                !finalBtn
+            ) {
+                // Fail open: if intro can't run, show the proposal UI.
+                if (proposalCard) proposalCard.hidden = false;
+                if (loveAlarm) loveAlarm.hidden = true;
+                if (heartLayer) heartLayer.hidden = true;
+                return;
+            }
+
+            // Initial state
+            setBattery(3);
+
+            activateBtn.addEventListener("click", () => {
+                if (introStarted) return;
+                introStarted = true;
+
+                activateBtn.disabled = true;
+                activateBtn.textContent = "Activating...";
+                batteryWrap.classList.add("is-charging");
+
+                startHearts("charging");
+
+                const from = 3;
+                const to = 100;
+                const durationMs = 3400;
+                const start = performance.now();
+
+                function tick(now) {
+                    const t = Math.min(1, (now - start) / durationMs);
+                    const eased = easeOutCubic(t);
+                    setBattery(from + (to - from) * eased);
+
+                    if (t < 1) {
+                        requestAnimationFrame(tick);
+                        return;
+                    }
+
+                    // Charged state
+                    batteryWrap.classList.remove("is-charging");
+                    batteryWrap.classList.add("is-full");
+                    setBattery(100);
+
+                    storyImg.src = "images/1.jpeg";
+                    storyImg.alt = "A couple standing together";
+                    storyLine1.textContent = "Love battery: 100%";
+                    storyLine2.textContent = "Valentine’s Day mode activated 💘";
+                    activateBtn.style.display = "none";
+                    finalBtn.style.display = "inline-flex";
+
+                    // Hearts calm down, then stop.
+                    startHearts("calm");
+                    window.setTimeout(stopHearts, 900);
+                }
+
+                requestAnimationFrame(tick);
+            });
+
+            finalBtn.addEventListener("click", () => {
+                // Transition to proposal
+                loveAlarm.classList.add("is-leaving");
+                heartLayer.classList.add("is-leaving");
+
+                window.setTimeout(() => {
+                    loveAlarm.hidden = true;
+                    stopHearts();
+                    heartLayer.replaceChildren();
+                    heartLayer.hidden = true;
+                    revealProposal();
+                }, 520);
+            });
+        }
+
+        runLoveAlarmSequence();
+
+        const zone = document.getElementById("zone");
+        const yesBtn = document.getElementById("yesBtn");
+        const noBtn = document.getElementById("noBtn");
+        const result = document.getElementById("result");
+        const hint = document.getElementById("hint");
+        const artImg = document.getElementById("artImg");
+
+        /* ---------- CONFETTI ---------- */
+        const confettiCanvas = document.getElementById("confettiCanvas");
+
+        function resizeConfettiCanvas() {
+            const dpr = Math.max(1, window.devicePixelRatio || 1);
+            confettiCanvas.width = Math.floor(window.innerWidth * dpr);
+            confettiCanvas.height = Math.floor(window.innerHeight * dpr);
+            confettiCanvas.style.width = "100vw";
+            confettiCanvas.style.height = "100vh";
+        }
+
+        resizeConfettiCanvas();
+        window.addEventListener("resize", resizeConfettiCanvas);
+        window.addEventListener("orientationchange", () => setTimeout(resizeConfettiCanvas, 150));
+
+        let confettiInstance = null;
+        if (window.confetti && typeof window.confetti.create === "function") {
+            confettiInstance = confetti.create(confettiCanvas, {
+                resize: false,
+                useWorker: true
+            });
+        }
+
+        function fullScreenConfetti() {
+            if (!confettiInstance) return;
+            const end = Date.now() + 1600;
+
+            (function frame() {
+                confettiInstance({
+                    particleCount: 12,
+                    spread: 90,
+                    startVelocity: 45,
+                    ticks: 180,
+                    origin: { x: Math.random(), y: Math.random() * 0.3 }
+                });
+                if (Date.now() < end) requestAnimationFrame(frame);
+            })();
+
+            setTimeout(() => {
+                confettiInstance({
+                    particleCount: 300,
+                    spread: 140,
+                    startVelocity: 60,
+                    ticks: 220,
+                    origin: { x: 0.5, y: 0.55 }
+                });
+            }, 300);
+        }
+
+        /* ---------- YES BUTTON GROWS ---------- */
+        let yesScale = 1;
+        function growYes() {
+            yesScale = Math.min(2.2, yesScale + 0.1);
+            yesBtn.style.transform = `translateY(-50%) scale(${yesScale})`;
+        }
+
+        /* ---------- NO BUTTON RUNS AWAY ---------- */
+        function clamp(n, min, max) {
+            return Math.max(min, Math.min(max, n));
+        }
+
+        function moveNo(px, py) {
+            const z = zone.getBoundingClientRect();
+            const b = noBtn.getBoundingClientRect();
+
+            let dx = (b.left + b.width / 2) - px;
+            let dy = (b.top + b.height / 2) - py;
+            let mag = Math.hypot(dx, dy) || 1;
+            dx /= mag;
+            dy /= mag;
+
+            let newLeft = (b.left - z.left) + dx * 150;
+            let newTop = (b.top - z.top) + dy * 150;
+
+            newLeft = clamp(newLeft, 0, z.width - b.width);
+            newTop = clamp(newTop, 0, z.height - b.height);
+
+            noBtn.style.left = newLeft + "px";
+            noBtn.style.top = newTop + "px";
+            noBtn.style.transform = "none";
+
+            growYes();
+        }
+
+        zone.addEventListener("pointermove", e => {
+            const b = noBtn.getBoundingClientRect();
+            const d = Math.hypot(
+                (b.left + b.width / 2) - e.clientX,
+                (b.top + b.height / 2) - e.clientY
+            );
+            if (d < 140) moveNo(e.clientX, e.clientY);
         });
-        if (Date.now() < end) requestAnimationFrame(frame);
-      })();
 
-      setTimeout(() => {
-        confettiInstance({
-          particleCount: 300,
-          spread: 140,
-          startVelocity: 60,
-          ticks: 220,
-          origin: { x: 0.5, y: 0.55 }
+        noBtn.addEventListener("click", e => e.preventDefault());
+
+        /* ---------- YES CLICK ---------- */
+        yesBtn.addEventListener("click", () => {
+            zone.style.display = "none";
+            hint.style.display = "none";     // HIDE THE HINT
+            result.style.display = "block";
+            artImg.src = "images/4.jpeg";
+            resizeConfettiCanvas();
+            fullScreenConfetti();
         });
-      }, 300);
-    }
-
-    /* ---------- YES BUTTON GROWS ---------- */
-    let yesScale = 1;
-    function growYes() {
-      yesScale = Math.min(2.2, yesScale + 0.1);
-      yesBtn.style.transform = `translateY(-50%) scale(${yesScale})`;
-    }
-
-    /* ---------- NO BUTTON RUNS AWAY ---------- */
-    function clamp(n, min, max) {
-      return Math.max(min, Math.min(max, n));
-    }
-
-    function moveNo(px, py) {
-      const z = zone.getBoundingClientRect();
-      const b = noBtn.getBoundingClientRect();
-
-      let dx = (b.left + b.width / 2) - px;
-      let dy = (b.top + b.height / 2) - py;
-      let mag = Math.hypot(dx, dy) || 1;
-      dx /= mag;
-      dy /= mag;
-
-      let newLeft = (b.left - z.left) + dx * 150;
-      let newTop  = (b.top - z.top) + dy * 150;
-
-      newLeft = clamp(newLeft, 0, z.width - b.width);
-      newTop  = clamp(newTop, 0, z.height - b.height);
-
-      noBtn.style.left = newLeft + "px";
-      noBtn.style.top = newTop + "px";
-      noBtn.style.transform = "none";
-
-      growYes();
-    }
-
-    zone.addEventListener("pointermove", e => {
-      const b = noBtn.getBoundingClientRect();
-      const d = Math.hypot(
-        (b.left + b.width / 2) - e.clientX,
-        (b.top + b.height / 2) - e.clientY
-      );
-      if (d < 140) moveNo(e.clientX, e.clientY);
-    });
-
-    noBtn.addEventListener("click", e => e.preventDefault());
-
-    /* ---------- YES CLICK ---------- */
-    yesBtn.addEventListener("click", () => {
-      zone.style.display = "none";
-      hint.style.display = "none";     // HIDE THE HINT
-      result.style.display = "block";
-      resizeConfettiCanvas();
-      fullScreenConfetti();
-    });
-  </script>
+    </script>
 </body>
+
 </html>
-
-
